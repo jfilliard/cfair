@@ -6,6 +6,7 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use CFair\Controller\ConsumerController;
 use CFair\Controller\OverviewController;
+use CFair\Controller\ResetController;
 
 class Controllers implements ServiceProviderInterface {
     public function register(Container $container)
@@ -20,6 +21,12 @@ class Controllers implements ServiceProviderInterface {
             return new OverviewController(
                 $container['db'],
                 $container['twig']
+            );
+        };
+        $container['reset.controller'] = function(Container $container) {
+            return new ResetController(
+                $container['reset-database.tool'],
+                $container['url_generator']
             );
         };
     }

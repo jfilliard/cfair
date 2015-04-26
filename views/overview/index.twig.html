@@ -76,10 +76,12 @@
                                     <b>{{ processed }}</b> messages have been processed. <cite>Yata!</cite>
                                 {% endif %}
                                 <br/>
-                                {% if processed_last_hour == processed %}
-                                    And that's in less than an hour!
-                                {% elseif processed_last_hour > 1 %}
-                                    And <em>{{ processed_last_hour }}</em> have been processed just in the last hour!
+                                {% if processed_last_hour > 1 %}
+                                    {% if processed_last_hour == processed %}
+                                        And that's in less than an hour!
+                                    {% else %}
+                                        And <em>{{ processed_last_hour }}</em> have been processed just in the last hour!
+                                    {% endif %}
                                 {% endif %}
                             </p>
                         </div>
@@ -117,7 +119,22 @@
         <footer class="page-footer orange">
             <div class="container">
                 <div class="row">
-                    <div class="col l6 s12">
+                    <div class="col l4 s12">
+                        <h5 class="white-text">Tools</h5>
+                        <ul>
+                            <li>
+                                <a class="waves-effect waves-light btn modal-trigger" href="#push-message">
+                                    <i class="mdi-av-playlist-add left"/></i>Push message
+                                </a>
+                            </li>
+                            <li>
+                                <a class="waves-effect waves-light btn red" href="{{ url('reset') }}">
+                                    <i class="mdi-action-delete left"></i>Reset database
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col l4 s12">
                         <h5 class="white-text">Links</h5>
                         <ul>
                             <li><a class="white-text" href="https://mathieu.rochette.cc/">mathieu.rochette.cc</a></li>
@@ -125,7 +142,7 @@
                             <li><a class="white-text" href="https://texthtml.net/">texthtml.net</a></li>
                         </ul>
                     </div>
-                    <div class="col l6 s12">
+                    <div class="col l4 s12">
                         <h5 class="white-text">Connect</h5>
                         <ul>
                             <li><a class="white-text" href="https://twitter.com/mathieurochette">twitter</a></li>
@@ -136,11 +153,87 @@
             </div>
             <div class="footer-copyright">
                 <div class="container">
-                Powered by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+                    Powered by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
                 </div>
             </div>
         </footer>
 
+        <!-- Modal Structure -->
+        <div id="push-message" class="modal">
+            <div class="modal-content">
+                <form class="col s12" id="push-form">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input placeholder="User Id" name="userId" required type="number" min="1" max="10000000" value="134256" class="validate">
+                            <label for="userId">User Id</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <select name="originatingCountry" required>
+                                <option value="" disabled>Choose a country</option>
+                                <option selected>FR</option>
+                                <option>GB</option>
+                            </select>
+                            <label for="originatingCountry">Country Code (iso2)</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <select name="currencyFrom" required>
+                                <option value="" disabled>Choose a currency</option>
+                                <option selected>EUR</option>
+                                <option>GBP</option>
+                            </select>
+                            <label for="currencyFrom">Currency From</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input name="amountSell" type="number" required value="1000" min="0.01" max="1000000" step="0.01" class="validate">
+                            <label for="amountSell">Amount Sell</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <select name="currencyTo" required>
+                                <option value="" disabled>Choose a currency</option>
+                                <option>EUR</option>
+                                <option selected>GBP</option>
+                            </select>
+                            <label for="currencyTo">Currency To</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input name="amountBuy" type="number" required value="747.10" min="0.01" max="1000000" step="0.01" class="validate">
+                            <label for="amountBuy">Amount Buy</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="modal-close waves-effect waves-green btn-flat">Push</button>
+                </form>
+            </div>
+        </div>
+
         <a href="https://github.com/mathroc/cfair"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('.modal-trigger').leanModal();
+                $('select').material_select();
+                $('#push-form').on('submit', function(event) {
+                    event.preventDefault();
+                    var data = {};
+                    $('input[name],select[name]', this).each(function(i, input) {
+                        data[input.name] = input.value;
+                    });
+                    data.rate = data.amountBuy / data.amountSell;
+                    data.timePlaced = moment().format('D-MMM-YY, H:mm:ss');
+                    var xhr = new XMLHttpRequest;
+                    xhr.open('POST', '{{ url('consume') }}');
+                    xhr.onreadystatechange = function(event) {
+                        if (this.readyState === 4) {
+                            window.location = '';
+                        }
+                    }
+                    xhr.send(JSON.stringify(data));
+                });
+            });
+        </script>
     </body>
 </html>
