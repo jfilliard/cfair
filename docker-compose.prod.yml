@@ -1,0 +1,65 @@
+web:
+    image: nginx
+    volumes:
+        - config/docker/nginx/conf.d/:/etc/nginx/conf.d/:ro
+    links:
+        - fpm
+    ports:
+        - 8087:80
+
+db:
+    image: mysql:5.7
+    environment:
+        - MYSQL_ROOT_PASSWORD=cfair
+        - MYSQL_USER=cfair
+        - MYSQL_PASSWORD=cfair
+        - MYSQL_DATABASE=cfair
+
+fpm:
+    build: config/docker/php/fpm
+    volumes:
+        - web:/scripts/web/:ro
+        - src:/scripts/src/:ro
+        - views:/scripts/views/:ro
+    volumes_from:
+        - vendor
+    links:
+        - db
+    environment:
+        - APPLICATION_DEBUG=true
+
+composer:
+    build: config/docker/php/composer
+    volumes:
+        - composer.json:/scripts/composer.json:rw
+        - composer.lock:/scripts/composer.lock:rw
+        - bin:/scripts/bin:rw
+    volumes_from:
+        - vendor
+
+console:
+    build: config/docker/php/console
+    volumes:
+        - bin:/scripts/bin/:ro
+        - src:/scripts/src/:ro
+    volumes_from:
+        - vendor
+    links:
+        - db
+
+processor:
+    build: config/docker/php/console
+    entrypoint: /scripts/entrypoint.sh
+    volumes:
+        - config/docker/php/processor/entrypoint.sh:/scripts/entrypoint.sh:ro
+        - bin:/scripts/bin/:ro
+        - src:/scripts/src/:ro
+    volumes_from:
+        - vendor
+    links:
+        - db
+
+vendor:
+    build: config/docker/php/vendor
+    volumes:
+        - /scripts/vendor
