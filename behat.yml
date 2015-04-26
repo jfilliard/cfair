@@ -1,0 +1,17 @@
+default:
+    suites:
+        domain:
+            paths:    [ %paths.base%/features ]
+            contexts: [ DomainContext, CommonContext ]
+        api:
+            paths:    [ %paths.base%/features ]
+            contexts: [ ApiContext, CommonContext ]
+            filters:
+                tags: @api
+        cli:
+            paths:    [ %paths.base%/features ]
+            contexts: [ CliContext, CommonContext ]
+            filters:
+                tags: @cli
+    formatters:
+        pretty: ~

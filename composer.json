@@ -1,0 +1,30 @@
+{
+    "name": "cfair",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Mathieu Rochette",
+            "email": "mathieu@rochette.cc"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CFair\\": "src/"
+        }
+    },
+    "require": {
+        "silex/silex": "~2.0@dev",
+        "gitory/pimple-cli": "~1.0",
+        "symfony/console": "~2.6",
+        "monolog/monolog": "~1.13",
+        "symfony/monolog-bridge": "~2.6",
+        "phpspec/phpspec": "~2.2",
+        "doctrine/dbal": "~2.5"
+    },
+    "require-dev": {
+        "texthtml/whoops-silex": "~1.0",
+        "symfony/var-dumper": "~2.6",
+        "behat/behat": "~3.0@dev",
+        "beberlei/assert": "~2.3"
+    }
+}

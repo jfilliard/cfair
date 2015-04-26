@@ -1,0 +1,80 @@
+web:
+    image: nginx
+    environment:
+        - VIRTUAL_HOST=cfair.dev
+        - VIRTUAL_LABELS=dev ngnix cfair
+    volumes:
+        - config/docker/nginx/conf.d/:/etc/nginx/conf.d/:ro
+    links:
+        - fpm
+
+adminer:
+    image: clue/adminer
+    environment:
+        - VIRTUAL_HOST=adminer.cfair.dev
+        - VIRTUAL_LABELS=dev adminer cfair
+    links:
+        - db
+
+db:
+    image: mysql:5.7
+    environment:
+        - MYSQL_ROOT_PASSWORD=cfair
+        - MYSQL_USER=cfair
+        - MYSQL_PASSWORD=cfair
+        - MYSQL_DATABASE=cfair
+
+fpm:
+    build: config/docker/php/fpm
+    volumes:
+        - web:/scripts/web/:ro
+        - src:/scripts/src/:ro
+    volumes_from:
+        - vendor
+    links:
+        - db
+    ports:
+        - 9000:9000
+
+composer:
+    build: config/docker/php/composer
+    volumes:
+        - composer.json:/scripts/composer.json:rw
+        - composer.lock:/scripts/composer.lock:rw
+        - bin:/scripts/bin:rw
+    volumes_from:
+        - vendor
+
+console:
+    build: config/docker/php/console
+    volumes:
+        - bin:/scripts/bin/:ro
+        - src:/scripts/src/:ro
+    volumes_from:
+        - vendor
+    links:
+        - db
+
+behat:
+    build: config/docker/php/behat
+    volumes:
+        - behat.yml:/scripts/behat.yml/:ro
+        - src:/scripts/src/:ro
+        - features:/scripts/features/:rw
+    volumes_from:
+        - vendor
+    links:
+        - db
+
+phpspec:
+    build: config/docker/php/phpspec
+    volumes:
+        - src:/scripts/src/:ro
+        - spec:/scripts/spec/:rw
+    volumes_from:
+        - vendor
+
+vendor:
+    build: config/docker/php/vendor
+    volumes:
+        - /scripts/vendor
