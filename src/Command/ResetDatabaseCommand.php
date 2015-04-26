@@ -9,14 +9,14 @@ use CFair\Tool\ResetDatabaseTool;
 
 class ResetDatabaseCommand extends Command
 {
-	private $resetDatabaseTool;
+    private $resetDatabaseTool;
 
-	public function __construct($name, ResetDatabaseTool $resetDatabaseTool)
-	{
-		parent::__construct($name);
+    public function __construct($name, ResetDatabaseTool $resetDatabaseTool)
+    {
+        parent::__construct($name);
 
-		$this->resetDatabaseTool = $resetDatabaseTool;
-	}
+        $this->resetDatabaseTool = $resetDatabaseTool;
+    }
 
     protected function configure()
     {
@@ -25,6 +25,6 @@ class ResetDatabaseCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-    	$this->resetDatabaseTool->exec();
+        $this->resetDatabaseTool->exec();
     }
 }

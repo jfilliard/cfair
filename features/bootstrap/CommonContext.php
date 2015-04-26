@@ -40,7 +40,10 @@ class CommonContext implements SnippetAcceptingContext
      */
     public function thereIsAPendingJob(PyStringNode $payload)
     {
-        $this->application()['db']->insert('job', ['payload' => $payload]);
+        $this->application()['db']->insert('job', [
+            'payload' => $payload,
+            'created_at' => new DateTime,
+        ], ['created_at' => 'datetime']);
     }
 
     /**

@@ -25,6 +25,6 @@ class DomainContext implements SnippetAcceptingContext
      */
     public function theMessageProcessorPickIt()
     {
-        $this->application()['processor.tool']->processAll();
+        $this->application()['processor.tool']->process(INF, 0);
     }
 }

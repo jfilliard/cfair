@@ -29,10 +29,13 @@ fpm:
     volumes:
         - web:/scripts/web/:ro
         - src:/scripts/src/:ro
+        - views:/scripts/views/:ro
     volumes_from:
         - vendor
     links:
         - db
+    environment:
+        - APPLICATION_DEBUG=true
     ports:
         - 9000:9000
 
@@ -48,6 +51,18 @@ composer:
 console:
     build: config/docker/php/console
     volumes:
+        - bin:/scripts/bin/:ro
+        - src:/scripts/src/:ro
+    volumes_from:
+        - vendor
+    links:
+        - db
+
+processor:
+    build: config/docker/php/console
+    entrypoint: /scripts/entrypoint.sh
+    volumes:
+        - config/docker/php/processor/entrypoint.sh:/scripts/entrypoint.sh:ro
         - bin:/scripts/bin/:ro
         - src:/scripts/src/:ro
     volumes_from:

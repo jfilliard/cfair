@@ -19,7 +19,8 @@
         "monolog/monolog": "~1.13",
         "symfony/monolog-bridge": "~2.6",
         "phpspec/phpspec": "~2.2",
-        "doctrine/dbal": "~2.5"
+        "doctrine/dbal": "~2.5",
+        "twig/twig": "~1.18"
     },
     "require-dev": {
         "texthtml/whoops-silex": "~1.0",

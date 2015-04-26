@@ -11,6 +11,7 @@ class Routes implements ControllerProviderInterface {
         $routes = $app['controllers_factory'];
 
         $routes->post('/consume', 'consumer.controller:exec');
+        $routes->get('/', 'overview.controller:index');
 
         return $routes;
     }

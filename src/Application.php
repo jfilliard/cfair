@@ -37,10 +37,10 @@ class Application extends SilexApplication {
         $this->register(new DoctrineServiceProvider, [
             'db.options' => [
                 'driver'   => 'pdo_mysql',
-                'host'     => 'db',
-                'user'     => 'cfair',
-                'password' => 'cfair',
-                'dbname'   => 'cfair',
+                'host'     => getenv('DB_PORT_3306_TCP_ADDR'),
+                'user'     => getenv('DB_ENV_MYSQL_USER'),
+                'password' => getenv('DB_ENV_MYSQL_PASSWORD'),
+                'dbname'   => getenv('DB_ENV_MYSQL_DATABASE'),
             ],
         ]);
     }

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>CFair</title>
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
+        <!-- Compiled and minified JavaScript -->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+    </head>
+    <body>
+        <nav class="light-blue lighten-1" role="navigation">
+            <div class="nav-wrapper container">
+                <a id="logo-container" href="#" class="brand-logo">CFair</a>
+            </div>
+        </nav>
+        <div class="section no-pad-bot" id="index-banner">
+            <div class="container">
+                <h1 class="header center orange-text">Messages Overview</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <!--   Icon Section   -->
+                <div class="row">
+                    <div class="col s12 m6">
+                        <div class="icon-block">
+                            <h2 class="center light-blue-text"><i class="mdi-image-flash-on"></i></h2>
+                            <h5 class="center">Queued messages</h5>
+
+                            <p class="light">
+                                {% if to_be_processed == 1 %}
+                                    <b>1</b> message remaining.
+                                {% elseif to_be_processed > 1 %}
+                                    <b>{{ to_be_processed }}</b> messages remaining.
+                                {% endif %}
+                                {% if veryverylate %}
+                                    Am I sleeping?
+                                {% elseif verylate %}
+                                    I'm starting to get tired…
+                                {% elseif late %}
+                                    I'll keep working, don't mind me.
+                                {% else %}
+                                    {% if to_be_processed == 0 %}
+                                        Yeay! Nothing left to do!
+                                    {% elseif to_be_processed < 10 %}
+                                        Almost there :)
+                                    {% elseif to_be_processed < 50 %}
+                                        I'm busy…
+                                    {% elseif to_be_processed < 150 %}
+                                        Wow! So much to do!
+                                    {% elseif to_be_processed < 300 %}
+                                        Uh. I don't know how to tell you…
+                                    {% elseif to_be_processed < 300 %}
+                                        Are you trying to
+                                    {% endif %}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col s12 m6">
+                        <div class="icon-block">
+                            <h2 class="center light-blue-text"><i class="mdi-action-settings"></i></h2>
+                            <h5 class="center">Processed Messages</h5>
+
+                            <p class="light">
+                                {% if processed == 0 %}
+                                    No messages have been processed yet.
+                                {% elseif processed == 1 %}
+                                    <b>1</b> message have been processed.
+                                {% else %}
+                                    <b>{{ processed }}</b> messages have been processed. <cite>Yata!</cite>
+                                {% endif %}
+                                <br/>
+                                {% if processed_last_hour == processed %}
+                                    And that's in less than an hour!
+                                {% elseif processed_last_hour > 1 %}
+                                    And <em>{{ processed_last_hour }}</em> have been processed just in the last hour!
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="icon-block">
+                        <h2 class="center light-blue-text"><i class="mdi-file-cloud-done"></i></h2>
+                        <h5 class="center">Currency Flow</h5>
+
+                        <table>
+                            <tbody>
+                                {% for row in stats %}
+                                    <tr>
+                                        <td>{{ row.currency }}</td>
+                                        <td class="amount">{{ row.amount_from }}</td>
+                                        <td class="amount">{{ row.amount_to }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th>Currency</th>
+                                    <th>Amount from</th>
+                                    <th>Amount to</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="page-footer orange">
+            <div class="container">
+                <div class="row">
+                    <div class="col l6 s12">
+                        <h5 class="white-text">Links</h5>
+                        <ul>
+                            <li><a class="white-text" href="https://mathieu.rochette.cc/">mathieu.rochette.cc</a></li>
+                            <li><a class="white-text" href="https://github.com/mathroc">github.com/mathroc</a></li>
+                            <li><a class="white-text" href="https://texthtml.net/">texthtml.net</a></li>
+                        </ul>
+                    </div>
+                    <div class="col l6 s12">
+                        <h5 class="white-text">Connect</h5>
+                        <ul>
+                            <li><a class="white-text" href="https://twitter.com/mathieurochette">twitter</a></li>
+                            <li><a class="white-text" href="https://www.linkedin.com/in/mathroc">LinkedIn</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <div class="container">
+                Powered by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+                </div>
+            </div>
+        </footer>
+
+        <a href="https://github.com/mathroc/cfair"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    </body>
+</html>
